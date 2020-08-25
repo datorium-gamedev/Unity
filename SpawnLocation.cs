@@ -12,9 +12,14 @@ public class SpawnLocation : MonoBehaviour
     private float bulletTimer;
     private bool canShoot = true;
 
+    //public AudioClip myAudioClip;
+    //private AudioSource myAudioSource;
+
     private void Start()
     {
         bulletTimer = timer;
+
+        //myAudioSource = gameObject.GetComponent<AudioSource>();
     }
 
     // Update is called once per frame
@@ -35,11 +40,16 @@ public class SpawnLocation : MonoBehaviour
         {
             if (Input.GetButtonDown("Fire1"))
             {
+                ////myAudioSource.Play(); // TO PLAY THE SOUND ATTACHED TO THE AUDIO SOURCE
+                //myAudioSource.PlayOneShot(myAudioClip); // TO PLAY ANY CLIP YOU PUT ON THE AUDIOCLIP SLOT
+                //myAudioSource.volume = 0.75f; // CHANGE AUDIOSOURCE VOLUME 
+
                 bulletTimer = timer;
                 canShoot = false;
                 Rigidbody objectClone;
                 objectClone = Instantiate(ObjToSpawn, gameObject.transform.position, transform.rotation);
                 objectClone.velocity = myCamera.transform.TransformDirection(Vector3.forward * 100);
+                
             }
         }
     }

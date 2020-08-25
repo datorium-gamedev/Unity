@@ -5,6 +5,8 @@ using UnityEngine;
 public class PlayerStats : MonoBehaviour
 {
     public int playerHealth = 100;
+    public int playerScore = 0;
+
 
 
     // Start is called before the first frame update
@@ -16,8 +18,11 @@ public class PlayerStats : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+      
         if (playerHealth <= 0)
+        { 
             gameObject.SetActive(false);
+        }
 
         //if (playerHealth <= 0)
         //    Destroy(gameObject);

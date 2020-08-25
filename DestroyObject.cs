@@ -19,6 +19,7 @@ public class DestroyObject : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
+        GameObject.Find("PlayerController").GetComponent<PlayerStats>().playerScore += 1;
         Instantiate(explosion, gameObject.transform.position, transform.rotation);
         Destroy(collision.gameObject);
         Destroy(gameObject);

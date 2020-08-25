@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI; // <---- You need this
 
@@ -12,18 +13,56 @@ public class TextManager : MonoBehaviour
     public Slider mySlider;
     public GameObject myPlayer;
 
+    public GameObject myGameUI;
+    public GameObject myMenuUI;
+    private bool menuOpen = true;
+
     //Replace int with float if you still have int
     public float playerHealth;
     public float timerValue = 60.0f;
 
+    private void Awake()
+    {
+        GameObject.Find("Menu").SetActive(false);
+    }
+
     // Update is called once per frame
     void Update()
     {
-        if (timerValue >= 0)
+        //Open and close main menu
+        if(Input.GetKeyDown(KeyCode.Escape))
         {
-            timerValue -= Time.deltaTime;
-            
+            if(menuOpen == true)
+            {
+                //Unlocks mouse when in menu
+                Cursor.visible = true;
+                Cursor.lockState = CursorLockMode.Confined;
+
+                myGameUI.SetActive(false);
+                myMenuUI.SetActive(true);
+
+                Time.timeScale = 0.0f;
+                menuOpen = false;
+            }
+
+            else if (menuOpen == false)
+            {
+                // Locks mouse when not in menu
+                Cursor.visible = false;
+                Cursor.lockState = CursorLockMode.Locked;
+
+                myGameUI.SetActive(true);
+                myMenuUI.SetActive(false);
+
+                Time.timeScale = 1f;
+                menuOpen = true;
+            }
+
         }
+
+
+        if (timerValue >= 0)
+            timerValue -= Time.deltaTime; 
 
         playerHealth = myPlayer.GetComponent<PlayerStats>().playerHealth;
         // Replaces the health with a value

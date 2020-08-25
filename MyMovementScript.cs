@@ -10,6 +10,8 @@ public class MyMovementScript : MonoBehaviour
     public float YForce = 10f;
     public Rigidbody myRigid;
     public bool onGround = false;
+
+    
     
 
     // Update is called once per frame
@@ -28,6 +30,7 @@ public class MyMovementScript : MonoBehaviour
         //transform.Rotate(transform.up * horizontalInput * turnSpeed);
         if (Input.GetButtonDown("Jump") && onGround == true)
         {
+            SoundManagerScript.PlaySound("jump");
             myRigid.AddForce(new Vector3(0, YForce, 0), ForceMode.Impulse);
             onGround = false;
             Debug.Log("Jump");

@@ -6,10 +6,13 @@ using UnityEngine;
 public class MouseLook : MonoBehaviour
 {
     public float mouseSensitivity = 100.0f;
-    public float clampAngle = 80.0f;
 
     private float rotationY = 0.0f;
     private float rotationX = 0.0f;
+
+    private float xAxisClamp;
+    public float xMaxClamp = 90; // Make sure to have the default value of 90 or something like that :)
+
 
     public Camera myCamera;
 
@@ -21,28 +24,46 @@ public class MouseLook : MonoBehaviour
 
         rotationX = rotation.x;
         rotationY = rotation.y;
+
+        Cursor.visible = false;
+        Cursor.lockState = CursorLockMode.Locked;
     }
 
     // Update is called once per frame
     void Update()
     {
-        float mouseX = Input.GetAxis("Mouse X");
-        float mouseY = -Input.GetAxis("Mouse Y");
+        float mouseX = Input.GetAxis("Mouse X") * mouseSensitivity * Time.deltaTime;
+        float mouseY = Input.GetAxis("Mouse Y") * mouseSensitivity * Time.deltaTime;
 
-        rotationX += mouseY * mouseSensitivity * Time.deltaTime;
-        rotationY += mouseX * mouseSensitivity * Time.deltaTime;
+        xAxisClamp += mouseY;
 
-        rotationX = Mathf.Clamp(rotationX, -clampAngle, clampAngle);
-        
-        Quaternion localRotation = Quaternion.Euler(rotationX, rotationY, 0.0f);
+        // xMaxClamp = 90 in my case by default
+        if (xAxisClamp > xMaxClamp)
+        {
+            xAxisClamp = xMaxClamp;
+            mouseY = 0.0f;
+            ClampXAxisRotationToValue(-xMaxClamp);
+        }
 
-        gameObject.transform.rotation = localRotation;
+        else if (xAxisClamp < -xMaxClamp )
+        {
+            xAxisClamp = -xMaxClamp;
+            mouseY = 0.0f;
+            ClampXAxisRotationToValue(xMaxClamp);
+        }
+
+        gameObject.GetComponent<Transform>().Rotate(Vector3.up * mouseX);
+        myCamera.transform.Rotate(Vector3.left * mouseY);
+
 
         Cursor.visible = false;
         Cursor.lockState = CursorLockMode.Locked;
 
-        if(Input.GetMouseButtonDown(0))
-        WeaponAim();
+
+
+
+        if (Input.GetMouseButtonDown(0))
+            WeaponAim();
     }
 
     void WeaponAim()
@@ -51,12 +72,22 @@ public class MouseLook : MonoBehaviour
         Ray myRay = new Ray(transform.position, myCamera.transform.TransformDirection(Vector3.forward) * 10000);
         Debug.DrawRay(transform.position, myCamera.transform.TransformDirection(Vector3.forward) * 10000, Color.red);
 
-        if(Physics.Raycast(myRay, out hit, 10000))
+        if (Physics.Raycast(myRay, out hit, 10000))
         {
             if (hit.collider.tag == "Cube")
                 Debug.Log(hit.collider.name);
         }
     }
+
+    // Have this for clamp restriction
+    private void ClampXAxisRotationToValue(float value)
+    {
+        Vector3 eulerRotation = transform.eulerAngles;
+        eulerRotation.x = value;
+        myCamera.transform.eulerAngles = eulerRotation;
+    }
+
+
 
 
 
